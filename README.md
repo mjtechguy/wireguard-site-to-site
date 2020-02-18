@@ -1,6 +1,6 @@
 # Wireguard Site-to-Site VPN
 
-This guide will show you how to connect two (or more) networks to each other via standard Linux machines and Wireguard VPN.
+This guide will show you how to connect two (or more) networks (not just clients) to each other via standard Linux machines and Wireguard VPN.
 
 The goal of this guide is to:
 
@@ -21,9 +21,9 @@ For simplicity sake and if you are new to Wireguard, I recommend using **Option 
 
 ## Securing The Server
 
-If you are installing this on a virtual private server on Digital Ocean, AWS or Linode, use an appropriate firewall or IP tables configuration to secure the server.
+If you are installing this on a virtual private server on Digital Ocean, AWS or Linode, use an appropriate firewall or IPtables configuration to secure the server.
 
-I use Digital Ocean and I only open UDP on the port the Wireguard server is listening on to all IP addresses. I lock down SSH to my home or office IP to reduce the likelihood of an attacker gaining access to the system.
+I use Digital Ocean and on the Digital Ocean firewall, I only open UDP on the port the Wireguard server is listening on to all IP addresses. I lock down SSH to my home or office IP to reduce the likelihood of an attacker gaining access to the system.
 
 See the `ListenPort` in the /etc/wireguard/wg0.conf file to know what port you server is listening on.
 
@@ -127,6 +127,12 @@ If you want all machines on your CLIENT private network to be able to access the
 
 Below are examples and will need to be adjusted for your specific networks and config
 
-* **Wireguard Windows client machine:** route add 10.132.0.0/16 MASK 255.255.0.0 10.9.0.2
-* **Wireguard Linux client machine:** ip route add 10.132.0.0/16 via 10.9.0.2 dev wg0
+* **Wireguard Windows client machine (self):** route add 10.132.0.0/16 MASK 255.255.0.0 10.9.0.2
+* **Wireguard Windows client machine (another host):** route add 10.132.0.0/16 MASK 255.255.0.0 PRIVATE_IP_OF_WG_CLIENT
+* **Wireguard Linux client machine (self):** route add 10.132.0.0/16 via 10.9.0.2 dev wg0
+* **Wireguard Linux client machine (another host):** route add -net 10.132.0.0 netmask 255.255.0.0 gw PRIVATE_IP_OF_WG_CLIENT
 * **Entire Network:** Add a route to the entire SERVER private network on your router. Pointing 10.132.0.0/16 to the IP of the Wireguard CLIENT on your network.
+
+Please ask me any question about the setup or post any corrections under "Issues".
+
+Twitter: https://twitter.com/mjtechguy
